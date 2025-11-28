@@ -18,7 +18,7 @@ const App = () => {
     const [demoMode, setDemoMode] = useState(false);
 
     // API KEY FIJA - Reemplaza con tu key real
-    const API_KEY = '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';
+    const API_KEY = process.env.REACT_APP_OPENAI_API_KEY || '';
 
     useEffect(() => {
         if (person) loadAnswers();
