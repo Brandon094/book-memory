@@ -21,11 +21,22 @@ const App = () => {
     const API_KEY = process.env.REACT_APP_OPENAI_API_KEY || '';
 
     useEffect(() => {
-        if (person) loadAnswers();
+        if (person) {
+            loadAnswers();
+        }
     }, [person]);
 
     const loadAnswers = async () => {
         try {
+            // PRIMERO VERIFICAR MODO DEMO
+            const demoResult = await window.storage.get('demo-mode');
+            if (demoResult?.value === 'true') {
+                setDemoMode(true);
+                setAnswers(DEMO_ANSWERS);
+                return;
+            }
+
+            // SI NO ES DEMO, CARGAR RESPUESTAS NORMALES
             const result = await window.storage.get(`answers-${person}`);
             if (result) setAnswers(JSON.parse(result.value));
         } catch (e) {
@@ -36,6 +47,10 @@ const App = () => {
     const saveAnswers = async () => {
         try {
             await window.storage.set(`answers-${person}`, JSON.stringify(answers));
+            // SI ES MODO USUARIO, DESACTIVAR DEMO
+            if (!demoMode) {
+                await window.storage.set('demo-mode', 'false');
+            }
             setSaveMsg('✓ Guardado');
             setTimeout(() => setSaveMsg(''), 2500);
         } catch (e) {
@@ -48,10 +63,24 @@ const App = () => {
     };
 
     const activateDemo = () => {
+        // GUARDAR DATOS DEMO Y ACTIVAR MODO
         setAnswers(DEMO_ANSWERS);
         setDemoMode(true);
         setPerson('mama');
         setShowMenu(true);
+
+        // GUARDAR EN LOCALSTORAGE
+        window.storage.set(`answers-mama`, JSON.stringify(DEMO_ANSWERS));
+        window.storage.set('demo-mode', 'true');
+    };
+
+    // FUNCIÓN PARA SALIR DEL MODO DEMO
+    const exitDemoMode = () => {
+        setDemoMode(false);
+        setAnswers({});
+        setPerson(null);
+        window.storage.set('demo-mode', 'false');
+        window.storage.set(`answers-mama`, JSON.stringify({}));
     };
 
     const generateStory = async () => {
