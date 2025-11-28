@@ -78,7 +78,7 @@ const App = () => {
 - Incluye diálogos naturales y descripciones vívidas
 - Estructura la historia de forma narrativa
 - Aproximadamente 800-1200 palabras
-- Finaliza con un mensaje de amor hacia la familia, especialmente hacia Brandon
+- Finaliza con un mensaje de amor hacia la familia
 - Mantén un lenguaje natural y conversacional
 - Usa un estilo literario hermoso pero accesible`;
 
